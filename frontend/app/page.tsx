@@ -170,6 +170,13 @@ const LoginPage = () => {
         </div>
         <div className="mt-4 flex items-center w-full text-center">
           <Link
+            href={`${PG.USER}/join`}
+            className="text-xs text-gray-500 capitalize text-center w-full">
+            <span className="text-blue-700"> 회원가입 </span>
+          </Link>
+        </div>
+        <div className="mt-4 flex items-center w-full text-center">
+          <Link
             href={`${PG.LAWYER}/login`}
             className="text-xs text-gray-500 capitalize text-center w-full"
           >
