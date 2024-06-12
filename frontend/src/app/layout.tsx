@@ -21,7 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<main className="flex flex-col min-h-screen bg-zinc-950 text-white">
+				<main className="flex flex-col min-h-screen  text-white"> 
+				{/* bg-zinc-950 */}
 					<LayoutWrapper token={token}>{children}</LayoutWrapper>
 				</main>
 				<Next13NProgress

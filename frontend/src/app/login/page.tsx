@@ -33,11 +33,22 @@ export default function LoginPage() {
 				throw new Error('Please enter your credentials.');
 
 			const payload: I_ApiUserLoginRequest = {
-				login: loginRef.current?.value,
+				username: loginRef.current?.value,
 				password: passwordRef.current?.value,
 			};
 
-			const response = await fetch('/api/login', {
+			console.log(`1 - 페이로드 정보 : ${JSON.stringify(payload)}`)
+
+			const response1 = await fetch('/api/hello', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+
+			// -------------------------------------------------------------
+			console.log(`2 - App Routing POST `)
+			const response2 = await fetch('/api/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -45,7 +56,26 @@ export default function LoginPage() {
 				body: JSON.stringify(payload),
 			});
 
-			const data: I_ApiUserLoginResponse = await response.json();
+			// -------------------------------------------------------------
+
+			const response3 = await fetch('http://localhost:8080/api/users/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'API-Key': process.env.DATA_API_KEY!,
+			},
+			body: JSON.stringify({ time: new Date().toISOString() }),
+			})
+		
+			const data2 = await response3.json()
+
+			console.log(`3 - 자바를 다녀 온 정보 :${JSON.stringify(data2)} `)
+
+
+
+			const data: I_ApiUserLoginResponse = await response1.json();
+			console.log(`4 - login/route 에서 온 정보 :${JSON.stringify(data)} `)
+			// -------------------------------------------------------------
 
 			if (data.success) {
 				setLoginIsComplete(true);
