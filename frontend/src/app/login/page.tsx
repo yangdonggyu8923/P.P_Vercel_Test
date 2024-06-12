@@ -33,7 +33,7 @@ export default function LoginPage() {
 				throw new Error('Please enter your credentials.');
 
 			const payload: I_ApiUserLoginRequest = {
-				username: loginRef.current?.value,
+				email: loginRef.current?.value,
 				password: passwordRef.current?.value,
 			};
 
@@ -58,18 +58,18 @@ export default function LoginPage() {
 
 			// -------------------------------------------------------------
 
-			const response3 = await fetch('http://localhost:8080/api/users/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'API-Key': process.env.DATA_API_KEY!,
-			},
-			body: JSON.stringify({ time: new Date().toISOString() }),
-			})
+			// const response3 = await fetch('http://localhost:8080/api/users/login', {
+			// method: 'POST',
+			// headers: {
+			// 	'Content-Type': 'application/json',
+			// 	'API-Key': process.env.DATA_API_KEY!,
+			// },
+			// body: JSON.stringify({ time: new Date().toISOString() }),
+			// })
 		
-			const data2 = await response3.json()
+			// const data2 = await response3.json()
 
-			console.log(`3 - 자바를 다녀 온 정보 :${JSON.stringify(data2)} `)
+			// console.log(`3 - 자바를 다녀 온 정보 :${JSON.stringify(data2)} `)
 
 
 
