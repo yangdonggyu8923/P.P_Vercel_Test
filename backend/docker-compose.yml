@@ -9,7 +9,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=root
-      - MONGO_INITDB_DATABASE=rootdb
+      - MONGO_INITDB_DATABASE=lawmatedb
     restart: always
     ports:
       - "27017:27017"
@@ -18,7 +18,7 @@ services:
   application:
     build: .
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mongodb://db-container::27017/rootdb
+      SPRING_DATASOURCE_URL: jdbc:mongodb://db-container::27017/lawmatedb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     ports:

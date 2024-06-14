@@ -39,12 +39,16 @@ export async function POST(request: NextRequest) {
 	  headers: {
 		'Content-Type': 'application/json',
 	  },
-	  body: JSON.stringify({ email, password }),
+	//   body: JSON.stringify({ email, password }),
+	  body: JSON.stringify({ email:"joe@test.com", password:"1234" }),
 	})
 	.then(async (res)=>{
 		return res.ok ?
 		res.json().then((json)=>{
 			const response = NextResponse.json({ success: true, message: "SUCCESS" }, { status: 200 })
+			console.log('------------------ response json ---------------')
+			console.log(JSON.stringify(json))
+			console.log('------------------ --------------- ---------------')
 			response.cookies.set({
 				name: 'userData',
 				value: JSON.stringify(json.data),

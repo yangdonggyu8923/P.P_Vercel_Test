@@ -1,8 +1,11 @@
 package com.example.webflux.user.service;
 
+import com.example.webflux.common.domain.Messenger;
+import com.example.webflux.user.domain.UserDTO;
 import com.example.webflux.user.domain.UserModel;
 import com.example.webflux.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -10,8 +13,10 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
+
 
     private final UserRepository userRepository;
 
@@ -27,8 +32,10 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(id);
     }
 
-    public Mono<UserModel> addUser(UserModel user) {
-        return userRepository.save(user);
+    public Mono<Messenger> addUser(UserModel user) {
+        return userRepository.save(user).flatMap(i -> Mono.just(Messenger.builder().message("SUCCESS").build()))
+                .switchIfEmpty(Mono.just(Messenger.builder().message("FAILURE").build()))
+                ;
     }
 
     public Mono<UserModel> updateUser(String id, UserModel user) {
@@ -53,5 +60,32 @@ public class UserServiceImpl implements UserService{
 
     public Flux<UserModel> findByLastName(String lastName) {
         return userRepository.findByLastName(lastName);
+    }
+
+    public Mono<Messenger> login(UserModel user) {
+        log.info("로그인에 사용되는 이메일 : {}",user.getEmail());
+        // Sync
+        return userRepository.findByEmail(user.getEmail())
+                .filter(i -> i.getPassword().equals(user.getPassword()))
+                .map(i -> UserDTO.builder().email(i.getEmail()).firstName(i.getFirstName()).lastName(i.getLastName()).build())
+                .log()
+                .map(i -> Messenger.builder().message("SUCCESS").data(i)
+                        .accessToken("fake-access-token")
+                        .refreshToken("fake-refresh-token")
+                        .build())
+
+                ;
+    }
+    public Mono<Messenger> login2(UserModel user) {
+        log.info("로그인 2 에 사용되는 이메일 : {}",user.getEmail());
+        // Async
+        // attach 방식으로 사용
+        return userRepository.findByEmail(user.getEmail())
+                .filter(i -> i.getPassword().equals(user.getEmail()))
+                .flatMap(i -> Mono.just(UserDTO.builder().email(i.getEmail()).firstName(i.getFirstName()).lastName(i.getLastName()).build()))
+                .log()
+                .flatMap(i -> Mono.just(Messenger.builder().data(i).build()))
+
+                ;
     }
 }

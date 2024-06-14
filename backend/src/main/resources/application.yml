@@ -2,11 +2,12 @@
 spring:
     main:
         allow-bean-definition-overriding: true
+        web-application-type: reactive
     application:
         name: rootapp
     data:
         mongodb:
-            uri: mongodb://root:root@223.130.153.131:27017/rootdb?retryWrites=true&w=majority&authSource=admin
+            uri: mongodb://root:root@101.79.10.130:27017/lawmatedb?retryWrites=true&w=majority&authSource=admin
     sql:
         init:
             mode: always

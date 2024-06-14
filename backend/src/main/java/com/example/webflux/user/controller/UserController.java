@@ -12,8 +12,6 @@ import reactor.core.publisher.Mono;
 
 import org.springframework.web.bind.annotation.*;
 import com.example.webflux.common.domain.Messenger;
-import com.example.webflux.user.domain.UserDTO;
-import com.example.webflux.user.service.UserService;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,13 +27,18 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @PostMapping("/login")
-    public Mono<Messenger> login(@RequestBody UserDTO param) {
-        log.info("::: login controller parameter ",param.toString());
-        // Messenger messenger = service.login(param);
-        Messenger m = Messenger.builder().message("SUCCESS").build();
-        Mono<Messenger> helloWorld = Mono.just(m);
-        return helloWorld;
+    public Mono<Messenger> login(@RequestBody UserModel param) {
+        log.info("::: 로그인 컨트롤러 파라미터 : {}",param.toString());
+
+        // Messenger m = Messenger.builder().message("SUCCESS").build();
+        // Mono<ResponseEntity<Messenger>> helloWorld = Mono.just(ResponseEntity.ok(m));
+
+        //switchIfEmpty는 전달받은 값이 null인 경우 새로운 Mono/Flux 로 변환
+        //defaultIfEmpty 는  defaultIfEmpty는 null을 대체하는 값을 지정한다
+
+        return userService.login(param).defaultIfEmpty(Messenger.builder().message("FAILURE").build());
     }
+
 
 
     @GetMapping("/logout")
@@ -60,15 +63,8 @@ public class UserController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<UserModel> createUser(@RequestBody UserModel user) {
-        return userService.addUser(new UserModel(
-                user.getUserId(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPassword(),
-                user.getRoles()
-        ));
+    public Mono<Messenger> saveUser(@RequestBody UserModel user) {
+        return userService.addUser(user);
     }
 
     @PutMapping("/update/{id}")
@@ -88,4 +84,7 @@ public class UserController {
     public Mono<Void> deleteAllUsers() {
         return userService.deleteAllUsers();
     }
+
+
+
 }
