@@ -20,5 +20,9 @@ logging:
                 type: trace
 
 jwt:
-    secret: ydglawmatesite
-    expiration: 86400000
+    secret: ydglawmatesiteydglawmatesiteydglawmatesiteydglawmatesiteydglawmatesiteydglawmatesite
+    expiration:
+        access: 600000
+        refresh: 1200000
+
+

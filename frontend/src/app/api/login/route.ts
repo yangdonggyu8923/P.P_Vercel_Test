@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 		'Content-Type': 'application/json',
 	  },
 	//   body: JSON.stringify({ email, password }),
-	  body: JSON.stringify({ email:"joe@test.com", password:"1234" }),
+	  body: JSON.stringify({ email, password }),
 	})
 	.then(async (res)=>{
 		return res.ok ?
@@ -48,24 +48,24 @@ export async function POST(request: NextRequest) {
 			const response = NextResponse.json({ success: true, message: "SUCCESS" }, { status: 200 })
 			console.log('------------------ response json ---------------')
 			console.log(JSON.stringify(json))
-			console.log('------------------ --------------- ---------------')
+			console.log('------------------------------------------------')
 			response.cookies.set({
 				name: 'userData',
 				value: JSON.stringify(json.data),
 				path: '/',
-				expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+				expires: new Date(Date.now() + json.refreshTokenExpiration),
 			})
 			response.cookies.set({
 				name: 'accessToken',
 				value: json.accessToken,
 				path: '/',
-				expires: new Date(Date.now() + 1000 * 60 * 60),
+				expires: new Date(Date.now() + json.accessTokenExpiration),
 			})
 			response.cookies.set({
 				name: 'refreshToken',
 				value: json.refreshToken,
 				path: '/',
-				expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+				expires: new Date(Date.now() + json.refreshTokenExpiration),
 			})
 			return response
 

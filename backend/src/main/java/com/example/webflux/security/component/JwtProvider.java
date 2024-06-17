@@ -1,30 +1,36 @@
-package com.example.webflux.security.service;
+package com.example.webflux.security.component;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
+
+import com.example.webflux.security.exception.JwtAuthenticationException;
+import com.example.webflux.user.domain.UserModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import com.example.webflux.security.exception.JwtAuthenticationException;
-import com.example.webflux.security.filter.TokenProvider;
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-@Service
-class TokenProviderImpl implements TokenProvider {
+@Component
+public class JwtProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
-    private long tokenExpiration;
+    @Value("${jwt.expiration.access}")
+    private long accessTokenExpiration;
+
+    @Value("${jwt.expiration.refresh}")
+    private long refreshTokenExpiration;
 
     String extractUsername(String jwt){
         return extractClaim(jwt, Claims::getSubject);
@@ -35,12 +41,8 @@ class TokenProviderImpl implements TokenProvider {
         return extractClaim(jwt, claims -> (List<String>) claims.get("roles"));
     }
 
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(Map.of(), userDetails);
-    }
 
-    @Override
+
     public boolean isTokenValid(String jwt){
         return !isTokenExpired(jwt);
     }
@@ -49,19 +51,18 @@ class TokenProviderImpl implements TokenProvider {
         return extractClaim(jwt, Claims::getExpiration).before(new Date());
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        long currentTimeMillis = System.currentTimeMillis();
+    public String generateToken(Map<String, Object> extraClaims, UserModel userDetails, String isRefreshToken) {
+
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .map(role -> role.substring("ROLE_".length()))
-                        .toArray())
-                .issuedAt(new Date(currentTimeMillis))
-                .expiration(new Date(currentTimeMillis + tokenExpiration * 1000))
+                .subject(userDetails.getEmail())
+                .claim("roles", List.of("user"))
+                .expiration(Date.from(Instant.now().plusSeconds(isRefreshToken.equals("accessToken") ? refreshTokenExpiration : accessTokenExpiration)))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
+
+
+
     }
 
     private <T> T extractClaim(String jwt, Function<Claims, T> claimResolver){

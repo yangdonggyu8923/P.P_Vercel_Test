@@ -50,6 +50,16 @@ public class UsersCollectionConfig {
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
                 System.out.println(commandResult);
 
+//                boolean existsToken = database.listCollectionNames().into(new ArrayList<String>()).contains("tokens");
+//                if (!existsToken) {
+//
+//                    MongoCollection<Document> collection = database.getCollection("tokens");
+//                    Document token = new Document().append("refreshToken", "example").append("email", "ex@gmail.com").append("expiration", "2021-12-31T00:00:00.000Z");
+//                    collection.insertOne(token);
+//
+//
+//                }
+
                 boolean exists = database.listCollectionNames().into(new ArrayList<String>()).contains("users");
                 if (!exists) {
 

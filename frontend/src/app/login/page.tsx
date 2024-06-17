@@ -117,7 +117,7 @@ export default function LoginPage() {
 							<span className="label-text">Login</span>
 						</label>
 						<input
-							defaultValue="john@example.com"
+							defaultValue="tom@test.com"
 							type="text"
 							ref={loginRef}
 							className="input input-bordered"
@@ -135,7 +135,7 @@ export default function LoginPage() {
 							<span className="label-text">Password</span>
 						</label>
 						<input
-							defaultValue="12345"
+							defaultValue="1234"
 							type="password"
 							ref={passwordRef}
 							className="input input-bordered"

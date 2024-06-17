@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Component
 @Getter
 @Builder
@@ -17,5 +18,7 @@ public class Messenger {
     private Object data; // 제네릭 객체
     private String accessToken;
     private String refreshToken;
+    private long accessTokenExpiration;
+    private long refreshTokenExpiration;
 
 }

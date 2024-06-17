@@ -1,4 +1,5 @@
 package com.example.webflux.security.controller;
+import com.example.webflux.common.domain.Messenger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,5 +27,10 @@ public class ProfileController {
                 .collect(Collectors.toSet())
         ));
     }
-    
+
+    @GetMapping("/refresh")
+    Mono<Messenger> getRefresh(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return Mono.empty();
+    }
 }
